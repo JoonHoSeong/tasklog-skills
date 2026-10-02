@@ -4,7 +4,7 @@
 
 ### 설정
 
-`notion-init-work`는 프로젝트 설정, `notion-log-work`는 작업 기록, `notion-resume-work`는 진행 중 작업 복원에 사용한다. Codex, Kiro CLI, agy의 설치 위치와 스킬 전문은 [설치 안내](INSTALL_KIRO_CODEX_AGY.md)에 있다. 각 도구에 Notion MCP 연결이 필요하다.
+`notion-init-work`는 프로젝트 설정, `notion-log-work`는 작업 기록, `notion-resume-work`는 진행 중 작업 복원, `notion-monthly-report`는 선택한 기록을 프로젝트별 월간 보고서로 정리할 때 사용한다. Codex, Kiro CLI, agy의 설치 위치와 스킬 전문은 [설치 안내](INSTALL_KIRO_CODEX_AGY.md)에 있다. 각 도구에 Notion MCP 연결이 필요하다.
 
 프로젝트 루트의 `.tasklog.json` 템플릿:
 
@@ -55,6 +55,7 @@ Codex, Kiro CLI, agy는 모두 동일한 Category 기준을 적용한다. 주된
 1. `notion-init-work`로 설정 파일을 만들고 `"null"`을 실제 데이터베이스 ID/URL로 교체한다.
 2. `notion-log-work`로 완료 기록 또는 진행 중 체크포인트를 남긴다.
 3. 새 세션에서 `notion-resume-work`로 같은 프로젝트의 최신 진행 중 기록을 읽는다.
+4. `notion-monthly-report`로 `Include in Report`가 선택된 기록을 기간별·프로젝트별 보고서로 작성한다.
 
 기록이 실패하면 데이터베이스 접근 권한, 데이터베이스 ID와 데이터 소스 ID 구분, 속성 타입, Status 옵션, Select 옵션 수정 권한을 확인한다. 자동 스키마 변경 범위는 이번 기록에 필요한 Select 옵션 추가로 제한한다.
 
@@ -62,7 +63,7 @@ Codex, Kiro CLI, agy는 모두 동일한 Category 기준을 적용한다. 주된
 
 ### Setup
 
-Use `notion-init-work` to configure a project, `notion-log-work` to save work, and `notion-resume-work` to restore an in-progress checkpoint. The [installation guide](INSTALL_KIRO_CODEX_AGY.md) contains Codex, Kiro CLI, and agy paths and complete skill files. Each tool needs its own Notion MCP connection.
+Use `notion-init-work` to configure a project, `notion-log-work` to save work, `notion-resume-work` to restore an in-progress checkpoint, and `notion-monthly-report` to create a project-organized report from selected entries. The [installation guide](INSTALL_KIRO_CODEX_AGY.md) contains Codex, Kiro CLI, and agy paths and complete skill files. Each tool needs its own Notion MCP connection.
 
 Create `.tasklog.json` in the project root:
 
@@ -113,6 +114,7 @@ Store the **database** ID/URL in `.tasklog.json`; the skill fetches the **data s
 1. Run `notion-init-work`, then replace `"null"` with the target database ID/URL.
 2. Run `notion-log-work` to save completed work or an in-progress checkpoint.
 3. In a later session, run `notion-resume-work` to load the project's latest in-progress entry.
+4. Run `notion-monthly-report` to write a period-based report grouped by project from entries marked `Include in Report`.
 
 If writing fails, check database access, database versus data source IDs, property types, Status options, and permission to update Select options. Automatic schema changes are limited to Select options required for the current log entry.
 
