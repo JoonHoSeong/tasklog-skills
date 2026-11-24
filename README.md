@@ -60,6 +60,42 @@ npx skills update
 
 명령 옵션은 [skills 설치 문서](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)를 참고하세요.
 
+#### 특정 도구에 설치되지 않았을 때
+
+누락된 도구에 해당하는 명령만 실행합니다. 각 명령은 네 스킬을 모두 해당 도구의 전역 범위에 설치합니다. 기존 스킬을 직접 수정했다면 다시 설치하기 전에 변경 내용을 별도로 보관하세요.
+
+| 도구 | 개별 설치 명령 |
+| --- | --- |
+| Codex | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent codex` |
+| agy (Antigravity CLI) | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent antigravity-cli` |
+| Kiro CLI | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent kiro-cli` |
+| pi | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent pi` |
+| Claude Code | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent claude-code` |
+
+설치 목록은 대상 도구별로 확인할 수 있습니다.
+
+```bash
+npx skills list -g --agent codex
+npx skills list -g --agent antigravity-cli
+npx skills list -g --agent kiro-cli
+npx skills list -g --agent pi
+npx skills list -g --agent claude-code
+```
+
+목록에 보여도 현재 CLI 세션에 로딩됐다는 의미는 아닙니다. 해당 도구를 다시 시작한 뒤 `notion-init-work 스킬을 찾아서 읽어줘. 아직 파일이나 Notion은 변경하지 마.`라고 요청해 실제 탐색을 확인합니다. Kiro의 사용자 정의 에이전트는 별도로 스킬 리소스 설정이 필요할 수 있습니다. [Kiro 안내](https://kiro.dev/docs/cli/custom-agents/configuration-reference/#skill-resources)를 확인하세요.
+
+개별 설치도 실패하면 저장소의 네 폴더(`notion-init-work`, `notion-log-work`, `notion-resume-work`, `notion-monthly-report`)를 다음 전역 경로 아래에 폴더째 복사합니다. `SKILL.md`만 복사하면 자동 기록용 `scripts/`와 `references/`가 누락됩니다. 같은 이름의 폴더가 있으면 내용을 비교하고 기존 사용자 변경을 보관한 뒤 갱신합니다.
+
+| 도구 | 수동 배치할 상위 폴더 |
+| --- | --- |
+| Codex | `~/.agents/skills/` |
+| agy (Antigravity CLI) | `~/.gemini/config/skills/` |
+| Kiro CLI | `~/.kiro/skills/` |
+| pi | `~/.agents/skills/` |
+| Claude Code | `~/.claude/skills/` |
+
+예를 들어 pi의 기록 스킬은 `~/.agents/skills/notion-log-work/SKILL.md`와 같은 위치에 둡니다. 수동 복사한 스킬은 설치 도구의 업데이트 관리 대상에 등록되지 않을 수 있으므로 직접 갱신합니다. 배치 후 도구를 다시 시작하고 탐색을 확인한 다음 Notion MCP 연결과 필요한 자동 기록 설정을 진행합니다.
+
 ### 3. Notion MCP 연결 — 필수
 
 사용할 AI 도구마다 Notion 커넥터·플러그인 또는 MCP 서버를 연결하고 Notion 워크스페이스 인증을 완료합니다. 공식 원격 MCP 주소는 `https://mcp.notion.com/mcp`입니다. 도구별 설정은 [Notion 공식 MCP 연결 안내](https://developers.notion.com/guides/mcp/get-started-with-mcp)를 따르세요.
@@ -220,6 +256,42 @@ npx skills update
 ```
 
 See the [skills installation reference](https://github.com/vercel-labs/skills/blob/main/docs/commands.md) for command options.
+
+#### If a specific agent is missing the skills
+
+Run only the command for the missing agent. Each command installs all four skills globally for that agent. Preserve any local edits to installed skills before reinstalling.
+
+| Agent | Individual installation command |
+| --- | --- |
+| Codex | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent codex` |
+| agy (Antigravity CLI) | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent antigravity-cli` |
+| Kiro CLI | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent kiro-cli` |
+| pi | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent pi` |
+| Claude Code | `npx skills add JoonHoSeong/tasklog-skills -g --skill '*' --agent claude-code` |
+
+Inspect installations for each target:
+
+```bash
+npx skills list -g --agent codex
+npx skills list -g --agent antigravity-cli
+npx skills list -g --agent kiro-cli
+npx skills list -g --agent pi
+npx skills list -g --agent claude-code
+```
+
+An installer listing does not prove the current CLI session has loaded the skills. Restart the agent and ask: `Find and read the notion-init-work skill. Do not change files or Notion yet.` Custom Kiro agents may also need skill resources configured; see the [Kiro reference](https://kiro.dev/docs/cli/custom-agents/configuration-reference/#skill-resources).
+
+If individual installation also fails, copy the four complete folders (`notion-init-work`, `notion-log-work`, `notion-resume-work`, `notion-monthly-report`) from this repository into the appropriate global directory below. Copying only `SKILL.md` leaves out the automation scripts and references. Compare existing folders and preserve local changes before updating them.
+
+| Agent | Parent directory for manual placement |
+| --- | --- |
+| Codex | `~/.agents/skills/` |
+| agy (Antigravity CLI) | `~/.gemini/config/skills/` |
+| Kiro CLI | `~/.kiro/skills/` |
+| pi | `~/.agents/skills/` |
+| Claude Code | `~/.claude/skills/` |
+
+For example, pi's logging skill belongs at `~/.agents/skills/notion-log-work/SKILL.md`. Manually copied skills may not be registered with the installer's update management; update those copies manually. Restart the agent, verify discovery, then configure Notion MCP and any automatic recording you need.
 
 ### 3. Connect Notion MCP — required
 
