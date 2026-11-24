@@ -1,10 +1,76 @@
 # Notion 작업 기록 스킬 / Notion Work Log Skills
 
+[한국어](#한국어) | [English](#english)
+
+AI와 함께 수행한 작업의 이유, 변경 사항, 검증 결과와 다음 할 일을 Notion에 기록하고 다음 세션에서 복원하는 네 가지 스킬입니다.
+
+Four skills to save the reasoning, changes, verification, and next steps from AI-assisted work in Notion, then resume in a later session.
+
+> **Notion에 기록·조회하려면 사용하는 AI 도구에 Notion MCP를 반드시 설치 또는 연결하고 인증해야 합니다. 스킬 설치만으로 Notion MCP가 설정되지 않습니다.**
+>
+> **Notion MCP must be installed or connected and authenticated in your AI agent to read or write Notion. Installing these skills does not configure Notion MCP.**
+
 ## 한국어
 
-### 설정
+### 제공 기능
 
-`notion-init-work`는 프로젝트 설정, `notion-log-work`는 작업 기록, `notion-resume-work`는 진행 중 작업 복원, `notion-monthly-report`는 선택한 기록을 프로젝트별 월간 보고서로 정리할 때 사용한다. Codex, Kiro CLI, agy의 설치 위치와 스킬 전문은 [설치 안내](INSTALL_KIRO_CODEX_AGY.md)에 있다. 각 도구에 Notion MCP 연결이 필요하다.
+| 스킬 | 역할 |
+| --- | --- |
+| `notion-init-work` | 프로젝트명과 작업 기록용 Notion 데이터베이스 설정 |
+| `notion-log-work` | Why / What / Impact / Next Actions / References 형식으로 작업·체크포인트 기록 |
+| `notion-resume-work` | 같은 프로젝트의 최신 진행 중 기록에서 맥락과 다음 작업 복원 |
+| `notion-monthly-report` | 보고서에 포함하도록 선택한 기록을 기간별·프로젝트별로 정리 |
+
+Codex, Claude Code, Kiro CLI, agy(Antigravity CLI), pi coding agent용 연결을 제공합니다. 도구별 실제 검증 범위는 [검증 결과](VALIDATION.md)를 확인하세요. Claude Code의 실제 실행은 아직 검증하지 않았습니다.
+
+### 1. 준비 사항
+
+- 사용할 AI 도구와 모델 접근 권한
+- **해당 도구에 연결·인증된 Notion MCP**와 대상 데이터베이스의 읽기·쓰기 권한
+- Git과 `npx skills` 실행 환경: Node.js 22.20 이상 ([설치 도구 공식 안내](https://github.com/vercel-labs/skills))
+- 자동 기록을 사용할 경우 macOS/Linux, Python 3.10 이상, Git 저장소. Windows에서는 수동 스킬 사용 경로를 제공합니다.
+
+Notion MCP가 없으면 Notion 저장·조회·최신 기록 복원·보고서 조회가 작동하지 않습니다. 로컬 프로젝트 설정, Markdown 초안 보관과 제공된 기록에서의 복원만 사용할 수 있습니다.
+
+### 2. 스킬 설치
+
+여러 프로젝트에서 사용하려면 전역으로 설치합니다.
+
+```bash
+npx skills add JoonHoSeong/tasklog-skills -g
+```
+
+선택 화면에서 네 스킬과 사용할 AI 도구를 선택한 뒤 해당 도구를 다시 시작합니다. 프로젝트 한 곳에만 설치하려면 `-g`를 생략합니다. 설치 도구가 대상 도구를 지원하지 않거나 탐색에 실패하면 [수동 배치 안내](INSTALL_KIRO_CODEX_AGY.md)를 참고해 네 스킬 **폴더 전체**를 배치합니다. `scripts/`와 `references/`도 함께 유지해야 합니다.
+
+비공개 저장소로 운영하는 경우에는 저장소 읽기 권한과 Git 인증이 필요합니다. SSH 인증을 사용하는 설치 예시:
+
+```bash
+npx skills add git@github.com:JoonHoSeong/tasklog-skills.git -g
+```
+
+설치 상태와 업데이트를 확인합니다.
+
+```bash
+npx skills list -g
+npx skills check
+npx skills update
+```
+
+명령 옵션과 인증 방식은 [skills 설치 문서](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)를 참고하세요.
+
+### 3. Notion MCP 연결 — 필수
+
+사용할 AI 도구마다 Notion 커넥터·플러그인 또는 MCP 서버를 연결하고 Notion 워크스페이스 인증을 완료합니다. 공식 원격 MCP 주소는 `https://mcp.notion.com/mcp`입니다. 도구별 설정은 [Notion 공식 MCP 연결 안내](https://developers.notion.com/guides/mcp/get-started-with-mcp)를 따르세요.
+
+대상 데이터베이스를 읽고 페이지를 생성·수정할 수 있어야 합니다. 필요한 Select 옵션이 없으면 스키마 수정 권한도 필요합니다. 이미 연결된 Notion MCP가 있으면 중복 설치 대신 해당 도구에서 접근 권한을 확인하세요. 다른 AI 도구에 연결된 MCP 인증이 자동 공유된다고 가정하지 않습니다.
+
+AI 도구에 다음과 같이 요청해 연결을 확인합니다.
+
+> Notion MCP로 이 데이터베이스 URL의 속성과 데이터 소스를 읽어줘. 아직 페이지를 만들거나 수정하지는 마.
+
+데이터베이스를 실제로 읽을 수 있음을 확인한 뒤 프로젝트를 설정합니다. MCP 서버 설치·로그인·권한 설정은 이 저장소의 스크립트가 대신하지 않습니다.
+
+### 4. 프로젝트 설정
 
 프로젝트 루트의 `.tasklog.json` 템플릿:
 
@@ -17,7 +83,7 @@
 
 `"null"`은 문자열 입력 자리다. 기록 전에 **기록할 Notion 데이터베이스의 URL 전체 또는 데이터베이스 ID**로 교체한다. Notion에서 대상 데이터베이스를 열고 [`공유` → `링크 복사`](https://www.notion.com/en-gb/help/share-your-work)로 URL을 얻는다. URL을 그대로 넣어도 되고, URL 경로의 데이터베이스 페이지 ID만 넣어도 된다. `?v=` 뒤의 값은 뷰 ID이므로 사용하지 않는다. 데이터베이스 안의 템플릿이나 일반 페이지 링크도 사용하지 않는다. 스킬이 MCP로 실제 데이터베이스인지 검증한다. ID 탐색 순서는 명시적 입력 → `.tasklog.json` → `NOTION_WORK_LOG_DATABASE_ID`다. 문자열 `"null"`, JSON `null`, 빈 값은 미설정으로 취급한다.
 
-### 속성과 언어별 매핑
+### 데이터베이스 속성과 언어별 매핑
 
 스킬은 연결된 데이터베이스의 실제 속성명·타입·Status 옵션·데이터 소스 ID를 확인한다. 영어 열은 예시이며 실제 영어 템플릿의 이름이 다르면 그 스키마를 따른다.
 
@@ -31,10 +97,11 @@
 | 사용 모델 / LLM model | Select | `LLM` | `LLM` 또는 `Model` |
 | 상태 / Status | Status | `Status` | `Status` |
 | 보고서 포함 / Include in report | Checkbox | `Include in Report` | `Include in Report` |
+| Git 브랜치 / Git branch (선택) | Select 또는 Text | `Git Branch` | `Git Branch` 또는 `Branch` |
 
 현재 `LLM Logs`의 완료/진행 중 옵션은 `완료`/`진행 중`이다. 영어 템플릿의 예시는 `Done`/`In Progress`다. 스킬은 가능하면 Status 그룹 `complete`/`in_progress`로 식별하고, 그룹 정보가 없으면 의미가 분명한 이름을 사용한다. 여러 옵션이 대응되거나 의미가 불분명하면 확인을 요청한다. `시작 전`/`Not Started`는 완료나 진행 중에 해당하지 않는다.
 
-Codex, Kiro CLI, agy는 모두 동일한 Category 기준을 적용한다. 주된 산출물 한 가지를 선택하고, 여러 범주에 걸치면 판단 이유를 본문에 남긴다.
+Codex, Kiro CLI, agy, Claude Code, pi는 모두 동일한 Category 기준을 적용한다. 주된 산출물 한 가지를 선택하고, 여러 범주에 걸치면 판단 이유를 본문에 남긴다.
 
 | Category | 주된 산출물 |
 | --- | --- |
@@ -50,7 +117,7 @@ Codex, Kiro CLI, agy는 모두 동일한 Category 기준을 적용한다. 주된
 
 `.tasklog.json`에는 **데이터베이스** ID/URL을 넣고 MCP 생성·조회에는 해당 데이터베이스에서 조회한 **데이터 소스** ID를 사용한다. 데이터 소스 ID를 사용자가 설정 파일에 입력할 필요는 없다. 스킬의 JSON 예시는 한국어 데이터베이스 기준이다. 다른 데이터베이스에서는 속성 키, 상태 옵션, 날짜 필드명, 데이터 소스 ID를 실제 값으로 치환한다. Notion 화면 언어만 바뀌어도 기존 속성명이 번역된다고 가정하지 않는다.
 
-### 사용 순서
+### 5. 사용 순서
 
 1. `notion-init-work`로 설정 파일을 만들고 `"null"`을 실제 데이터베이스 ID/URL로 교체한다.
 2. `notion-log-work`로 완료 기록 또는 진행 중 체크포인트를 남긴다.
@@ -59,11 +126,103 @@ Codex, Kiro CLI, agy는 모두 동일한 Category 기준을 적용한다. 주된
 
 기록이 실패하면 데이터베이스 접근 권한, 데이터베이스 ID와 데이터 소스 ID 구분, 속성 타입, Status 옵션, Select 옵션 수정 권한을 확인한다. 자동 스키마 변경 범위는 이번 기록에 필요한 Select 옵션 추가로 제한한다.
 
+### 6. 자동 기록 활성화 — 선택
+
+스킬 설치와 자동 기록 활성화는 별도입니다. 기본값은 비활성입니다. 설치된 `notion-log-work` 폴더와 작업 프로젝트의 절대 경로를 지정합니다.
+
+```bash
+SKILL_DIR=/absolute/path/to/notion-log-work
+PROJECT_DIR=/absolute/path/to/project
+python3 "$SKILL_DIR/scripts/tasklog.py" --root "$PROJECT_DIR" install --agent pi
+```
+
+`--agent` 값은 `codex`, `claude-code`, `kiro`, `agy`, `pi`입니다. 사용할 도구마다 실행한 뒤 기존 `.tasklog.json` 필드를 유지하면서 `"auto_record": {"enabled": true}`를 추가합니다. 도구를 다시 시작하고 훅·확장 신뢰 및 Notion 쓰기 권한을 확인합니다.
+
+프로젝트 `.gitignore`에는 다음을 추가합니다.
+
+```gitignore
+/.tasklog.json
+/.tasklog/
+*.pre-tasklog
+```
+
+현재 에이전트가 작업 종료 시 한 차례 기록을 시도합니다. 강제 종료나 MCP·모델 오류 시 Notion 전송은 보장되지 않으며, 로컬 pending과 초안에서 수동 복구합니다. Git 변경이 없는 대화·설계 작업은 수동으로 기록합니다. 자동 기록은 추가 모델 턴을 사용하며, 실행 시간은 모델과 도구 호출에 따라 달라집니다. 자세한 도구별 설정·복구·제거 방법은 [자동 연동 안내](notion-log-work/references/automation.md)를 확인하세요.
+
+### 검증 및 문제 해결
+
+- Notion 접근 실패: 현재 도구의 MCP 연결·인증, 데이터베이스 권한과 ID를 확인합니다.
+- 자동 기록 실패: 훅 로딩·신뢰 상태와 `auto_record.enabled`를 확인하고 pending 초안을 수동 처리합니다.
+- 실제 지원 범위와 남은 제약: [검증 결과](VALIDATION.md). 지원 구현과 모든 모델·도구 조합의 실제 성공은 구분합니다.
+
+개발 검증 명령은 아래와 같습니다. 패키지 다운로드나 Notion 쓰기 없이 실행합니다. Node 테스트에는 `node --test`를 지원하는 환경이 필요합니다.
+
+```bash
+python3 -m unittest discover -s tests -v
+node --test tests/pi-extension.test.mjs
+git diff --check
+```
+
 ## English
 
-### Setup
+### Included skills
 
-Use `notion-init-work` to configure a project, `notion-log-work` to save work, `notion-resume-work` to restore an in-progress checkpoint, and `notion-monthly-report` to create a project-organized report from selected entries. The [installation guide](INSTALL_KIRO_CODEX_AGY.md) contains Codex, Kiro CLI, and agy paths and complete skill files. Each tool needs its own Notion MCP connection.
+| Skill | Purpose |
+| --- | --- |
+| `notion-init-work` | Configure the project name and work-log database |
+| `notion-log-work` | Save work and checkpoints as Why / What / Impact / Next Actions / References |
+| `notion-resume-work` | Restore context and next steps from the project's latest in-progress entry |
+| `notion-monthly-report` | Group selected entries into reports by period and project |
+
+Adapters are provided for Codex, Claude Code, Kiro CLI, agy (Antigravity CLI), and pi coding agent. See [validation results](VALIDATION.md) for the actual tested scope. Live Claude Code execution has not been verified yet.
+
+### 1. Prerequisites
+
+- An AI agent and access to its model
+- **Notion MCP connected and authenticated in that agent**, with read/write access to the target database
+- Git and an environment that runs `npx skills`: Node.js 22.20 or later ([installer documentation](https://github.com/vercel-labs/skills))
+- For automatic recording: macOS/Linux, Python 3.10 or later, and a Git repository. Windows users can use the manual skill workflow.
+
+Without Notion MCP, Notion writes, queries, restoration of the latest Notion entry, and report queries do not work. Only local project setup, Markdown drafts, and restoration from supplied records remain available.
+
+### 2. Install the skills
+
+Install globally to use the skills across projects:
+
+```bash
+npx skills add JoonHoSeong/tasklog-skills -g
+```
+
+Select all four skills and your AI agents, then restart the agents. Omit `-g` for a project installation. If the installer does not support or discover your agent, see the [manual placement guide](INSTALL_KIRO_CODEX_AGY.md) and place the four **complete skill folders**, including `scripts/` and `references/`.
+
+For a private repository, configure Git authentication with read access first. Example using SSH:
+
+```bash
+npx skills add git@github.com:JoonHoSeong/tasklog-skills.git -g
+```
+
+Inspect installations and manage updates:
+
+```bash
+npx skills list -g
+npx skills check
+npx skills update
+```
+
+See the [skills installation reference](https://github.com/vercel-labs/skills/blob/main/docs/commands.md) for options and authentication.
+
+### 3. Connect Notion MCP — required
+
+Connect a Notion connector, plugin, or MCP server in each AI agent you use and complete workspace authentication. The official remote MCP endpoint is `https://mcp.notion.com/mcp`. Follow [Notion's MCP connection guide](https://developers.notion.com/guides/mcp/get-started-with-mcp) for your client.
+
+The connection must be able to read the database and create/update its pages. Adding missing Select options also needs schema-update permission. If Notion MCP is already connected, verify its access instead of installing a duplicate. Do not assume authentication is shared across AI agents.
+
+Verify the connection by asking your agent:
+
+> Use Notion MCP to read the properties and data sources of this database URL. Do not create or modify any pages yet.
+
+Configure the project after the agent successfully reads the database. This repository's scripts do not install MCP servers, log in, or grant permissions for you.
+
+### 4. Configure the project
 
 Create `.tasklog.json` in the project root:
 
@@ -90,10 +249,11 @@ The skills fetch the database's actual property names, types, Status options, an
 | LLM model | Select | `LLM` | `LLM` or `Model` |
 | Status | Status | `Status` | `Status` |
 | Include in report | Checkbox | `Include in Report` | `Include in Report` |
+| Git branch (Optional) | Select or Text | `Git Branch` | `Git Branch` or `Branch` |
 
 The current Korean completion/in-progress options are `완료`/`진행 중`; `Done`/`In Progress` are English examples. Prefer the Status groups `complete`/`in_progress` when available. Otherwise use unambiguous option names. Ask if multiple options could match or their meaning is unclear. `Not Started`/`시작 전` means neither completed nor in progress.
 
-Codex, Kiro CLI, and agy use the same five Category values. Choose one based on the main deliverable and explain borderline choices in the entry.
+Codex, Kiro CLI, agy, Claude Code, and pi use the same five Category values. Choose one based on the main deliverable and explain borderline choices in the entry.
 
 | Category | Main deliverable |
 | --- | --- |
@@ -109,7 +269,7 @@ Prefer an equivalent existing Select option. If a required `Project`, `Category`
 
 Store the **database** ID/URL in `.tasklog.json`; the skill fetches the **data source** ID needed for MCP creation and queries. Users do not need to enter a data source ID in the config file. The skill payloads illustrate a Korean database. For another database, substitute its actual property keys, status values, date field names, and data source ID. Changing the Notion UI language does not imply that existing property names changed.
 
-### Workflow
+### 5. Usage
 
 1. Run `notion-init-work`, then replace `"null"` with the target database ID/URL.
 2. Run `notion-log-work` to save completed work or an in-progress checkpoint.
@@ -117,6 +277,42 @@ Store the **database** ID/URL in `.tasklog.json`; the skill fetches the **data s
 4. Run `notion-monthly-report` to write a period-based report grouped by project from entries marked `Include in Report`.
 
 If writing fails, check database access, database versus data source IDs, property types, Status options, and permission to update Select options. Automatic schema changes are limited to Select options required for the current log entry.
+
+### 6. Enable automatic recording — optional
+
+Installing the skills does not enable automatic recording. It is disabled by default. Set the absolute paths of the installed `notion-log-work` folder and your project:
+
+```bash
+SKILL_DIR=/absolute/path/to/notion-log-work
+PROJECT_DIR=/absolute/path/to/project
+python3 "$SKILL_DIR/scripts/tasklog.py" --root "$PROJECT_DIR" install --agent pi
+```
+
+Accepted `--agent` values: `codex`, `claude-code`, `kiro`, `agy`, and `pi`. Run it for each agent, then add `"auto_record": {"enabled": true}` to `.tasklog.json`, preserving existing fields. Restart the agent and verify hook/extension trust and Notion write permissions.
+
+Add these entries to your project's `.gitignore`:
+
+```gitignore
+/.tasklog.json
+/.tasklog/
+*.pre-tasklog
+```
+
+The current agent attempts recording once at the end of work. Forced shutdowns and MCP/model failures can prevent delivery; recover manually from local pending checkpoints and drafts. Record conversations or design work without Git changes manually. Automatic recording uses additional model turns, and duration depends on the model and tool calls. See the [automation guide](notion-log-work/references/automation.md) for agent settings, recovery, and removal.
+
+### Validation and troubleshooting
+
+- Notion access failure: check MCP connection/authentication in the current agent, database permissions, and the database ID.
+- Automatic recording failure: check hook loading/trust and `auto_record.enabled`, then process pending drafts manually.
+- Tested support and remaining limitations: [validation results](VALIDATION.md). Adapter implementation does not establish success for every model and agent combination.
+
+Run development checks without package downloads or Notion writes. The Node test requires a runtime that supports `node --test`.
+
+```bash
+python3 -m unittest discover -s tests -v
+node --test tests/pi-extension.test.mjs
+git diff --check
+```
 
 ## 라이선스 / License
 

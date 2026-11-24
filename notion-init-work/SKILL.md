@@ -5,6 +5,8 @@ description: 현재 프로젝트의 작업 기록용 이름을 .tasklog.json에 
 
 # Notion 작업 프로젝트 설정
 
+Codex, Kiro CLI, agy, Claude Code, pi에서 같은 JSON 설정을 사용한다. 자동 기록은 선택 기능이며 기존 `auto_record` 설정을 보존한다. 사용자가 활성화를 요청한 경우에만 `"auto_record": {"enabled": true}`를 추가한다. 훅·확장은 별도로 설치해야 하며 스킬만 설치했다고 자동 기록 완료로 보고하지 않는다. MCP가 없으면 로컬 설정만 준비하고 연결 미검증으로 표시한다. 파일 쓰기 기능도 없으면 사용자가 저장할 JSON을 응답으로 제공한다.
+
 ## 입력과 위치
 
 - 설정 파일 위치는 Git 저장소 안이면 `git rev-parse --show-toplevel`의 `.tasklog.json`, Git 저장소 밖이면 현재 작업 디렉터리의 `.tasklog.json`이다.

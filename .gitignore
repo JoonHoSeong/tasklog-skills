@@ -1,2 +1,5 @@
 .DS_Store
 /.tasklog.json
+/.tasklog/
+__pycache__/
+*.pre-tasklog
