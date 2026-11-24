@@ -9,7 +9,7 @@
 npx skills add JoonHoSeong/tasklog-skills -g
 ```
 
-Claude Code와 pi도 지원한다. 자동 기록용 훅·확장 설치, 활성화, 수동 기록·복원은 [자동 연동 안내](notion-log-work/references/automation.md)를 따른다. 스킬 설치만으로 훅·Notion 인증이 자동 설정되지는 않는다. 비공개 저장소 인증과 업데이트 명령은 [README](README.md)를 참고한다. 아래는 기존 세 도구용 수동 배치 안내이며, 자동 연결 코드는 각 스킬 폴더의 보조 파일까지 함께 설치해야 사용할 수 있다.
+Claude Code와 pi도 지원한다. 자동 기록용 훅·확장 설치, 활성화, 수동 기록·복원은 [자동 연동 안내](notion-log-work/references/automation.md)를 따른다. 스킬 설치만으로 훅·Notion 인증이 자동 설정되지는 않는다. 업데이트 명령은 [README](README.md)를 참고한다. 아래는 기존 세 도구용 수동 배치 안내이며, 자동 연결 코드는 각 스킬 폴더의 보조 파일까지 함께 설치해야 사용할 수 있다.
 
 `agy`는 Google Antigravity CLI를 뜻한다. 아래에는 터미널 설치 명령 없이, 직접 만들 폴더와 파일명 및 **파일에 넣을 전체 내용**을 적었다. `SKILL.md`의 YAML 머리말(`---` 포함)부터 마지막 줄까지 그대로 저장한다. 네 스킬의 내용은 세 도구에서 동일하다.
 
@@ -23,7 +23,7 @@ Claude Code와 pi도 지원한다. 자동 기록용 훅·확장 설치, 활성�
 | Kiro CLI | `~/.kiro/skills/notion-log-work/SKILL.md`<br>`~/.kiro/skills/notion-resume-work/SKILL.md`<br>`~/.kiro/skills/notion-init-work/SKILL.md`<br>`~/.kiro/skills/notion-monthly-report/SKILL.md` | `.kiro/skills/notion-log-work/SKILL.md`<br>`.kiro/skills/notion-resume-work/SKILL.md`<br>`.kiro/skills/notion-init-work/SKILL.md`<br>`.kiro/skills/notion-monthly-report/SKILL.md` |
 | agy (Antigravity CLI) | `~/.gemini/antigravity-cli/skills/notion-log-work/SKILL.md`<br>`~/.gemini/antigravity-cli/skills/notion-resume-work/SKILL.md`<br>`~/.gemini/antigravity-cli/skills/notion-init-work/SKILL.md`<br>`~/.gemini/antigravity-cli/skills/notion-monthly-report/SKILL.md` | `.agents/skills/notion-log-work/SKILL.md`<br>`.agents/skills/notion-resume-work/SKILL.md`<br>`.agents/skills/notion-init-work/SKILL.md`<br>`.agents/skills/notion-monthly-report/SKILL.md` |
 
-Antigravity **IDE**의 전역 위치는 `~/.gemini/config/skills/`이다. CLI의 전역 위치와 다르다. 스킬 폴더명은 YAML의 `name`과 동일한 `notion-log-work`, `notion-resume-work`, `notion-init-work`, `notion-monthly-report`로 쓴다. 보조 Bash 파일은 설치하지 않아도 된다.
+현재 공식 안내에서 Antigravity CLI와 IDE는 `~/.gemini/config/skills/` 전역 위치를 공유하며 `npx skills`도 이 위치에 설치한다. 아래 표의 `~/.gemini/antigravity-cli/skills/`는 CLI가 추가로 읽는 전용 위치다. [공식 스킬 위치 안내](https://antigravity.google/docs/skills)를 참고한다. 스킬 폴더명은 YAML의 `name`과 동일한 `notion-log-work`, `notion-resume-work`, `notion-init-work`, `notion-monthly-report`로 쓴다. 보조 Bash 파일은 설치하지 않아도 된다.
 
 ## 2. `notion-log-work/SKILL.md`에 넣을 전체 내용
 
@@ -50,7 +50,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 기록 규칙을 사용한다
 
 ## 입력 및 감지
 
-- 입력: `--project <name>`(선택), `--category Backend|Infra|Workflow|Troubleshooting|Architecture`(선택), `--type LLM-Assisted|Manual`(선택), `--model <active-model-id>`(선택), `--status Done|In Progress`(선택), `--include-in-report`(선택). 명시하지 않은 값을 추측해 옵션으로 전달하지 않는다.
+- 입력: `--project <name>`(선택), `--category Backend|Infra|Workflow|Troubleshooting|Architecture`(선택), `--type LLM-Assisted|Manual`(선택), `--model <active-model-id>`(선택), `--status Done|In Progress`(선택). 명시하지 않은 값을 추측해 옵션으로 전달하지 않는다.
 - 프로젝트명 우선순위는 **사용자가 명시한 `--project` > Git 루트 `.tasklog.json`의 `project` > Git `remote.origin.url`의 저장소명 > 현재 작업 디렉터리명**이다. Git 저장소가 아니면 현재 디렉터리를 루트로 본다. JSON이 잘못되었거나 `project`가 빈 값이면 잘못된 프로젝트에 기록하지 않도록 중단한다.
 - Git 상태, 현재 브랜치(`git branch --show-current`), 최근 커밋 SHA·시각, staged·unstaged diff를 직접 확인한다. 최근 커밋은 이번 작업으로 확인된 경우에만 사용하고 현재 세션의 변경 맥락과 대조해 기록 범위를 정한다. Git 저장소가 아니거나 diff가 없으면 사실을 명시하고 세션 맥락만 사용한다.
 
@@ -71,7 +71,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 기록 규칙을 사용한다
 
   스킬 파일이나 문서라는 형식만으로 Workflow를 고르지 않는다. 기록·복원 시스템의 구조와 계약을 설계했다면 Architecture, 이미 정해진 절차의 실행을 자동화했다면 Workflow다. 완료된 검증 가능한 작업은 완료 상태, 중단된 작업은 진행 중 상태와 구체적인 `Next Actions`를 사용한다. 입력의 `Done`·`In Progress`는 의미상 상태이며 실제 Notion 옵션 이름은 스키마에서 확인한다.
 - 현재 기록에 관여한 **정확한 활성 모델 ID**를 `LLM`에 기록한다. 탐색 순서는 사용자 `--model` > 현재 세션 메타데이터/실행 옵션 > 이 세션에 적용된 것으로 확인된 CLI 설정이다. 전역 설정만 보고 현재 세션 모델이라고 단정하지 않는다. 제품명(Codex·Kiro·agy), 공급자명, 모델 계열명만으로 정확한 모델 ID를 대체하거나 예시 페이로드 값을 복사하지 않는다. 확인할 수 없으면 다른 내용의 요약은 준비하되 기록 전에 사용자에게 활성 모델 ID를 요청한다. LLM이 작업 또는 기록 분석에 관여했다면 `Type=Manual`이어도 모델을 기록한다. 여러 모델이 관여했다면 주된 모델 ID를 Select에 넣고 확인된 다른 모델과 각 역할을 본문에 적는다.
-- `Include in Report`는 기본 `false`. 배포, 장애 해결, 정량 성능 개선, 주요 설계 결정 등 보고 가치가 명확할 때 `true`를 제안한다. 사용자 승인 없이 기본값을 바꾸지 않는다.
+- 보고서는 사용자가 지정한 기간의 모든 기록을 대상으로 한다. 보고서 포함 체크박스를 요구하거나 설정하지 않는다. 기존 `Include in Report` 속성은 삭제·수정하지 않고 기록 페이로드에서 생략한다.
 - Notion 전송 전 diff에서 토큰, 암호, 개인정보, 내부 URL, 고객 데이터 등 민감 정보를 제거한다. 비밀 값은 본문에 싣지 않고 변경의 의미만 기술한다. 테스트 수치가 없으면 수치를 만들지 않는다.
 - **참조 링크 및 연관 작업 수집**:
   - 세션 중 참고한 공식 문서, 라이브러리 가이드, 스택오버플로우, GitHub PR/Issue, 설계 문서 URL이 있다면 링크를 수집한다.
@@ -84,7 +84,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 기록 규칙을 사용한다
 
 1. 데이터베이스는 사용자가 명시한 ID/URL > `.tasklog.json`의 유효한 `notion_database_id` > `NOTION_WORK_LOG_DATABASE_ID` 환경변수 순서로 찾는다. 문자열 `"null"`, JSON `null`, 빈 값은 미설정으로 취급한다. 모두 미설정이면 ID/URL 입력을 요청하고 쓰기를 중단한다. 데이터베이스 내부의 일반 페이지나 템플릿 ID를 데이터베이스 ID로 사용하지 않는다.
 2. Notion MCP의 `notion_fetch({"id":"self"})`로 연결을 확인한다. 설정된 데이터베이스를 `notion_fetch`하여 실제 속성 이름·타입·옵션과 `<data-source url="collection://...">`의 ID를 확인한다. 데이터베이스 ID에서 데이터 소스 ID를 추측하지 않는다.
-3. 한국어 `LLM Logs`의 기본 속성은 `이름` Title, `Project` Select, `Date` Date, `Category` Select, `Type` Select, `Status` Status, `Include in Report` Checkbox, `LLM` Select이며, Git 브랜치 속성인 `Git Branch`(Select 또는 Text/Rich text)를 지원한다. 영어 템플릿에서는 제목이 `Name`, 상태가 `In Progress`·`Done`, 브랜치가 `Git Branch` 또는 `Branch`일 수 있다. **양쪽 모두** 실제 스키마에서 Title, 프로젝트 Select, 날짜 Date, 분류 Select, 작업 방식 Select, Status, 보고서 Checkbox, 모델 식별용 Select, 브랜치용 속성을 용도와 타입으로 매핑한다. 모델용 Select가 없다면 기존 속성을 임의 변환하지 말고 `LLM` Select를 추가한다. 스키마에 `Git Branch`(또는 `Branch`) 속성이 존재하면 감지된 현재 Git 브랜치명을 기록한다(Select 타입인 경우 옵션 추가/사용, Text 타입인 경우 문자열 기록). 스키마에 브랜치 속성이 아직 없으면 Notion 속성 쓰기는 건너뛰고 본문(What)에만 브랜치를 기록한다. Git 저장소가 아니거나 브랜치를 확인할 수 없으면 빈 값으로 처리하거나 생략한다. Status 옵션은 우선 그룹 `in_progress`·`complete`로 식별해 각각 체크포인트·완료에 사용한다. 그룹 정보가 없으면 `진행 중`/`완료` 또는 `In Progress`/`Done`처럼 의미가 분명한 옵션을 사용한다. 대응이 여러 개이거나 불분명할 때만 사용자에게 확인한다. `생성일` Created time은 읽기 전용이다.
+3. 한국어 `LLM Logs`의 기본 속성은 `이름` Title, `Project` Select, `Date` Date, `Category` Select, `Type` Select, `Status` Status, `LLM` Select이며, Git 브랜치 속성인 `Git Branch`(Select 또는 Text/Rich text)를 지원한다. 영어 템플릿에서는 제목이 `Name`, 상태가 `In Progress`·`Done`, 브랜치가 `Git Branch` 또는 `Branch`일 수 있다. **양쪽 모두** 실제 스키마에서 Title, 프로젝트 Select, 날짜 Date, 분류 Select, 작업 방식 Select, Status, 모델 식별용 Select, 브랜치용 속성을 용도와 타입으로 매핑한다. 모델용 Select가 없다면 기존 속성을 임의 변환하지 말고 `LLM` Select를 추가한다. 스키마에 `Git Branch`(또는 `Branch`) 속성이 존재하면 감지된 현재 Git 브랜치명을 기록한다(Select 타입인 경우 옵션 추가/사용, Text 타입인 경우 문자열 기록). 스키마에 브랜치 속성이 아직 없으면 Notion 속성 쓰기는 건너뛰고 본문(What)에만 브랜치를 기록한다. Git 저장소가 아니거나 브랜치를 확인할 수 없으면 빈 값으로 처리하거나 생략한다. Status 옵션은 우선 그룹 `in_progress`·`complete`로 식별해 각각 체크포인트·완료에 사용한다. 그룹 정보가 없으면 `진행 중`/`완료` 또는 `In Progress`/`Done`처럼 의미가 분명한 옵션을 사용한다. 대응이 여러 개이거나 불분명할 때만 사용자에게 확인한다. `생성일` Created time은 읽기 전용이다.
 4. 페이지 생성 전에 `Project`·`Category`·`Type`·모델 식별 속성(및 `Git Branch`가 Select 타입인 경우 브랜치명)의 **이번 기록에 필요한** Select 값을 모두 확인한다. 기존 옵션 중 의미가 맞는 값을 우선 사용한다. 빠진 속성과 옵션은 Notion MCP의 `notion_notion_update_data_source` 또는 동등한 데이터 소스 스키마 업데이트 도구로 자동 추가한다. `ALTER COLUMN "실제 속성명" SET SELECT(...)`에는 같은 속성의 기존 옵션을 모두 포함하고 이름·색상·설명과 속성 설명을 보존한다. 도구가 이를 보존할 수 없으면 기존 스키마를 덮어쓰지 않고 원인을 보고한다. 속성명이 영어 등으로 다르면 조회한 실제 이름을 쓴다. 필요한 변경만 한 호출로 보내고 데이터 소스를 다시 fetch해 필요한 속성과 옵션이 실제로 존재하는지 확인한다. 옵션 추가 도구가 없거나 권한/검증 오류가 나면 페이지 생성을 중단하고 정확한 원인을 보고한다. Title·Status 등 다른 속성이나 기존 옵션을 바꾸지 않는다.
 
 예: 옵션이 비어 있는 `Project`, `Category`, `Type`에 각각 `billing-api`, `Workflow`, `Manual`이 필요할 때의 Codex Notion MCP 페이로드. 실제 데이터 소스 ID·속성명·값을 사용한다. **기존 옵션이 하나라도 있으면 아래 예시를 그대로 보내지 말고 모든 기존 옵션을 포함**한다. DDL의 작은따옴표가 값에 있으면 MCP 문법에 맞게 이스케이프한다.
@@ -134,8 +134,7 @@ Notion MCP `notion_create_pages` 호출의 **한국어 `LLM Logs` 예시**다. �
       "Category": "Backend",
       "Type": "LLM-Assisted",
       "LLM": "<active-model-id>",
-      "Status": "완료",
-      "Include in Report": "__NO__"
+      "Status": "완료"
     },
     "content": "### 1. 배경 및 목적 (Why)\n...\n\n### 2. 주요 변경 내역 (What)\n...\n\n### 3. 기술적/정량적 임팩트\n...\n\n### 4. 다음 작업 (Next Actions)\n없음\n\n### 5. 참고 링크 및 연관 작업 (References)\n- 공식 문서/외부 참고: 없음\n- 연관 작업/문서: 없음"
   }]
@@ -144,7 +143,7 @@ Notion MCP `notion_create_pages` 호출의 **한국어 `LLM Logs` 예시**다. �
 
 같은 작업의 체크포인트가 이미 있으면 페이지를 조회해 `notion_update_page`로 본문과 `Status`를 갱신한다. 중복 생성 방지를 위해 프로젝트·제목·날짜 및 현재 세션의 작업 범위를 먼저 대조한다. 생성 후 반환된 페이지 ID/URL을 기록하고 조회로 속성 및 본문을 확인한다. 쓰기 결과가 불확실하면 먼저 조회하고 중복 생성하지 않는다. 옵션 사전 확인 이후 페이지 생성에서 `Invalid select value`가 나면 데이터 소스를 다시 조회해 누락 옵션을 추가하고 생성은 한 번만 재시도한다.
 
-월간 보고서는 `notion-monthly-report`의 기간·포함 여부·상태 구분 규칙을 따른다. 완료·진행 중 기록을 구분하며 같은 작업은 중복 집계하지 않는다. 해당 스킬을 사용할 수 없으면 사용자에게 보고서 규칙을 확인하고 자동 발행·예약은 수행하지 않는다.
+기간별 보고서는 `notion-monthly-report`의 날짜 범위·프로젝트·상태 구분 규칙을 따른다. 완료·진행 중 기록을 구분하며 같은 작업은 중복 집계하지 않는다. 해당 스킬을 사용할 수 없으면 사용자에게 보고서 규칙을 확인하고 자동 발행·예약은 수행하지 않는다.
 ~~~~
 
 ## 3. `notion-resume-work/SKILL.md`에 넣을 전체 내용
@@ -182,7 +181,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 동일한 복원 절차를 사용한
 4. 선택한 레코드를 `notion_fetch({"id":"PAGE_ID"})`로 읽는다. `Why`, `What`, 실제 검증 결과, `Next Actions`, `참고 링크 및 연관 작업(References)`을 간결하게 복원하고 페이지 링크를 제시한다. 기록의 브랜치(`Git Branch`), 커밋 SHA, 경로와 현재 Git 상태(현재 체크아웃된 브랜치 포함)를 비교해 브랜치 불일치·충돌·이미 완료된 단계·새 변경을 표시한다. 본문이 비어 있거나 잘린 경우 추정하지 않고 부족한 부분을 명시한다.
 5. 일치 레코드가 없으면 “이 프로젝트의 진행 중 기록 없음”을 알린다. 읽기만 수행하며 `Status`나 코드를 임의 변경하지 않는다. 실제로 다음 작업을 진행한 후 사용자가 `notion-log-work` 스킬을 요청하면 기존 체크포인트를 갱신한다.
 
-월간 보고서에 재사용할 때는 같은 데이터 소스에서 `Date` 기간과 `Include in Report`를 조건으로 조회한다. 체크포인트와 완료 기록이 같은 작업이면 완료 기록 한 건만 집계한다.
+기간별 보고서에 재사용할 때는 `notion-monthly-report`에 따라 같은 데이터 소스에서 지정한 `Date` 기간과 선택적 프로젝트 조건으로 전체 기록을 조회한다. 보고서 포함 체크박스는 사용하지 않는다. 기간 내 체크포인트와 완료 기록이 같은 작업이면 중복을 통합한다.
 ~~~~
 
 ## 4. `notion-init-work/SKILL.md`에 넣을 전체 내용
@@ -265,20 +264,22 @@ Kiro CLI의 커스텀 에이전트가 스킬을 못 찾으면 해당 에이전�
 ~~~~markdown
 ---
 name: notion-monthly-report
-description: Notion에서 Include in Report로 선택한 엔지니어링 작업을 기간별로 수집해 상세한 프로젝트 보고서 초안을 작성할 때 사용한다.
+description: 사용자가 지정한 기간의 Notion 작업 기록 전체를 조회해 프로젝트별 보고서 초안을 작성할 때 사용한다.
 ---
 
-# Notion 월간 작업 보고서
+# Notion 기간별 작업 보고서
 
-Codex, Kiro CLI, agy, Claude Code, pi에서 같은 분석 규칙을 사용한다. MCP를 쓸 수 없으면 사용자가 제공한 내보내기·로컬 기록으로 초안을 작성하되 조회 범위와 **Notion 최신 상태 미확인**을 표시한다. 포함 여부·날짜·상태를 확인할 수 없는 기록을 임의 집계하지 않는다. 자동 기록 설치는 보고서 예약·발행을 활성화하지 않는다.
+Codex, Kiro CLI, agy, Claude Code, pi에서 같은 분석 규칙을 사용한다. MCP를 쓸 수 없으면 사용자가 제공한 내보내기·로컬 기록으로 초안을 작성하되 조회 범위와 **Notion 최신 상태 미확인**을 표시한다. 날짜·상태를 확인할 수 없는 기록을 임의 집계하지 않는다. 자동 기록 설치는 보고서 예약·발행을 활성화하지 않는다.
 
-선택된 작업 기록을 근거로 경영·개발 공유에 쓸 수 있는 상세 보고서 초안을 작성한다. 기본 산출물은 응답의 Markdown이다. Notion 페이지 생성, 속성 변경, 외부 전송은 사용자가 그 작업을 별도로 요청한 경우에만 한다.
+지정 기간의 전체 작업 기록을 근거로 경영·개발 공유에 쓸 수 있는 상세 보고서 초안을 작성한다. 기본 산출물은 응답의 Markdown이다. Notion 페이지 생성, 속성 변경, 외부 전송은 사용자가 그 작업을 별도로 요청한 경우에만 한다.
 
 ## 입력과 기간
 
 - 사용자가 지정한 월·기간, 프로젝트, 출력 언어를 적용한다. 입력 형식은 `--month YYYY-MM`, `--from YYYY-MM-DD --to YYYY-MM-DD`, `--project <name>`, `--language ko|en`이다.
-- 기간을 지정하지 않은 월간 보고서 요청은 직전 완료 월을 사용한다. 보고서 첫 부분에 조회 기간과 생성 일자를 명시한다.
-- 프로젝트를 지정하면 그 프로젝트만 포함한다. 생략하면 모든 프로젝트의 선택 기록을 가져와 프로젝트별로 묶는다.
+- `--from`과 `--to`는 양끝 날짜를 포함한다. 조회는 작업 시간대의 시작일 00:00 이상, 종료일 다음 날 00:00 미만으로 변환한다. `--month`는 해당 월 1일 이상, 다음 달 1일 미만이다. 기간과 시간대를 보고서 첫 부분에 명시한다. 시간대는 사용자 지정 또는 프로젝트·세션에서 확인한 작업 시간대를 사용하고, 불명확한 타임스탬프 경계는 확인한다.
+- 기간이 없으면 시작일·종료일 또는 월을 요청한다. 한쪽 날짜만 주어졌거나 존재하지 않는 날짜, 시작일이 종료일보다 늦은 범위, 서로 충돌하는 월·날짜 입력은 조회 전에 확인한다. 임의로 직전 월을 선택하지 않는다. 보고서에 생성 일자도 명시한다.
+- 기존 설치와 호출을 유지하기 위해 스킬 이름은 `notion-monthly-report`를 유지하며, 월간 이외의 임의 기간도 같은 스킬로 처리한다.
+- 프로젝트를 지정하면 그 프로젝트만 포함한다. 생략하면 모든 프로젝트의 기간 내 기록을 가져와 프로젝트별로 묶는다.
 - 데이터베이스는 명시된 ID/URL > 프로젝트 루트 `.tasklog.json`의 유효한 `notion_database_id` > `NOTION_WORK_LOG_DATABASE_ID` 환경변수 순으로 찾는다. 문자열 `"null"`, JSON `null`, 빈 값은 미설정으로 처리한다. 값이 없으면 데이터베이스 ID/URL을 요청한다. 데이터베이스 안의 템플릿 페이지 ID를 사용하지 않는다.
 
 ## Notion 조회
@@ -286,20 +287,20 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 분석 규칙을 사용한다
 Notion MCP 예시는 Codex 커넥터 기준이다. 다른 환경에서는 같은 fetch·query·page fetch 기능의 실제 MCP 도구 스키마를 따른다.
 
 1. `notion_fetch({"id":"self"})`로 연결을 확인하고 대상 데이터베이스를 fetch한다. 실제 속성명, 타입, 옵션, 각 `<data-source url="collection://...">`를 확인한다. 데이터베이스 ID와 데이터 소스 ID를 혼동하지 않는다.
-2. 용도와 타입으로 `Date` Date, `Project` Select(있으면), `Include in Report` Checkbox, `Status` Status, 제목 Title, `Category` Select, `Type` Select, 모델 Select를 매핑한다. 영어 등 다른 언어 환경도 실제 schema를 기준으로 대응한다. 해당 용도의 속성이나 타입을 명확히 매핑할 수 없으면 잘못된 조건으로 조회하지 말고 누락 항목을 알린다.
-3. 해당 기간의 시작일 이상, 종료일 미만으로 한정해 `Include in Report=true`인 레코드만 조회한다. 종료일은 사용자가 지정한 범위에 맞춰 다음 날 또는 다음 달 1일로 계산한다. 프로젝트를 지정한 경우 Project 조건도 더한다. 날짜 속성이 비어 있는 기록은 기간에 임의 포함하지 말고 건수와 링크를 별도 알린다.
-4. 보고서에는 완료·진행 중 상태를 모두 포함하되 서로 다른 구역에서 구분한다. 완료하지 않은 일을 완료 성과로 표현하지 않는다. `Include in Report=false`인 기록은 명시적인 요청이 없는 한 보고서에 넣지 않는다.
-5. query 응답의 페이지네이션·결과 제한을 확인하고 끝까지 읽는다. SQL 결과는 rich text나 본문을 축약할 수 있으므로 각 후보의 원본 페이지를 fetch해 본문, 속성, URL을 확인한다. 큰 본문은 단계적으로 읽되 세부 근거를 버리지 않는다. 같은 작업의 중복 체크포인트와 완료 기록은 제목·프로젝트·날짜·본문으로 대조해 한 번만 집계하고, 상태 변화와 완료 기록 링크는 함께 남긴다.
+2. 용도와 타입으로 `Date` Date, `Project` Select(있으면), `Status` Status, 제목 Title, `Category` Select, `Type` Select, 모델 Select를 매핑한다. 영어 등 다른 언어 환경도 실제 schema를 기준으로 대응한다. 해당 용도의 속성이나 타입을 명확히 매핑할 수 없으면 잘못된 조건으로 조회하지 말고 누락 항목을 알린다.
+3. `Date`가 정규화한 시작일 이상, 배타적 종료일 미만인 모든 레코드를 조회한다. 보고서 포함 체크박스는 요구·조회·갱신하지 않는다. 기존 `Include in Report` 속성이 있어도 값과 관계없이 동일하게 처리하며, 속성이 없는 데이터베이스도 지원한다. 프로젝트를 지정한 경우 Project 조건도 더한다. 날짜가 없는 기록은 기간 내 기록으로 임의 포함하지 않는다. 별도 조회로 확인한 경우에만 누락 건수와 링크를 알린다.
+4. 상태로 조회 대상을 제외하지 않는다. 완료·진행 중·시작 전 등 실제 상태별로 구분하며, 완료하지 않은 일을 완료 성과로 표현하지 않는다. 상태는 조회 시점의 값이며, 별도 이력 근거 없이 과거 기간 말의 상태라고 단정하지 않는다.
+5. query 응답의 페이지네이션·결과 제한을 확인하고 끝까지 읽는다. SQL 결과는 rich text나 본문을 축약할 수 있으므로 각 후보의 원본 페이지를 fetch해 본문, 속성, URL을 확인한다. 큰 본문은 단계적으로 읽되 세부 근거를 버리지 않는다. 기간 내 같은 작업의 중복 체크포인트와 완료 기록은 Task ID를 우선하고 제목·프로젝트·날짜·본문을 대조해 한 번만 집계한다. 기간 내 최신 기록을 기준으로 상태 변화와 근거 링크를 남기고, 기간 밖 성과를 이번 기간 성과에 합치지 않는다.
 
-SQL 모드가 제공되는 Codex MCP의 조회 예시다. 실제 속성 키, 날짜 SQL column, `collection://` ID는 fetch 결과로 바꾸고 모든 값은 파라미터로 전달한다.
+`--from 2026-11-01 --to 2026-11-24`에 대한 SQL 모드 Codex MCP 조회 예시다. 종료일인 11월 24일을 포함하기 위해 11월 25일 미만으로 조회한다. 실제 속성 키, 날짜 SQL column, `collection://` ID는 fetch 결과로 바꾸고 모든 값은 파라미터로 전달한다.
 
 ```json
 {
   "data": {
     "mode": "sql",
     "data_source_urls": ["collection://<fetched-data-source-id>"],
-    "query": "SELECT * FROM \"collection://<fetched-data-source-id>\" WHERE \"date:Date:start\" >= ? AND \"date:Date:start\" < ? AND \"Include in Report\" = ? ORDER BY \"Project\", \"date:Date:start\"",
-    "params": ["2026-09-01", "2026-10-01", "__YES__"]
+    "query": "SELECT * FROM \"collection://<fetched-data-source-id>\" WHERE \"date:Date:start\" >= ? AND \"date:Date:start\" < ? ORDER BY \"Project\", \"date:Date:start\"",
+    "params": ["2026-11-01", "2026-11-25"]
   }
 }
 ```
@@ -308,7 +309,7 @@ SQL 모드가 제공되는 Codex MCP의 조회 예시다. 실제 속성 키, 날
 
 - 확인된 기록의 Why, What, 코드·모듈·도메인, API 경로와 시나리오 ID, 결정, 테스트 및 실측 결과, 운영 영향, 미완료 작업을 추출한다. 요약하더라도 기술적으로 유용한 하위 항목·결함 교정·호환성 세부사항은 살린다.
 - 수치, 완료 건수, 처리 시간, 성능 비율, 취약점 수는 원본 기록에 명시된 값만 쓴다. 가능한 경우 합계와 비율을 다시 계산한다. 출처 값과 재계산이 다르면 조용히 고치지 말고 “원본 수치 불일치”를 표시해 양쪽 수치를 보존한다. 미측정 값은 “측정 안 됨”으로 쓴다.
-- QA의 완료/PASS, 진행 중, 대기/Pending을 원본 상태대로 나누고 조회 기간 말 기준을 표기한다. 리팩토링 완료와 실측 QA 완료를 같은 상태로 합치지 않는다. 진행률은 전체 건수와 분모가 확인될 때만 산출하며, 원본 기록 수치와 계산 값을 구별한다.
+- QA의 완료/PASS, 진행 중, 대기/Pending을 원본 상태대로 나누고 근거 기록의 시점을 표기한다. 리팩토링 완료와 실측 QA 완료를 같은 상태로 합치지 않는다. 진행률은 전체 건수와 분모가 확인될 때만 산출하며, 원본 기록 수치와 계산 값을 구별한다.
 - Notion의 Category, Type, 모델 속성은 레코드 분류와 분석에 활용하되, 사용자가 요청하지 않는 한 각 프로젝트 끝에 `Category / Type / 모델 / 근거` 메타데이터 줄을 출력하지 않는다. 모델 목록이나 기록 속성 부록도 기본 보고서에 넣지 않는다.
 - 각 프로젝트 끝에 별도의 `근거:` 목록을 붙이지 않는다. 사용자가 출처 링크를 요청하거나 특정 사실의 추적성이 꼭 필요한 경우에만 해당 내용 가까이에 링크를 둔다.
 - 본문에 이메일, 토큰, 비밀값, 내부 절대경로 등 민감 정보가 있으면 보고서에 그대로 복사하지 않는다. 임팩트 설명에 필요한 경우 민감값을 제거하거나 마스킹한다.
@@ -323,7 +324,7 @@ SQL 모드가 제공되는 Codex MCP의 조회 예시다. 실제 속성 키, 날
 
 조회 범위: YYYY-MM-DD ~ YYYY-MM-DD
 대상 프로젝트: ...
-보고서 포함 선택 기록: N건
+조회 기록: N건 / 중복 통합 후 작업: M건
 
 ## 요약
 주요 성과, 운영 영향, 전체 진행 상황을 2~5문장으로 설명한다.
@@ -358,12 +359,12 @@ SQL 모드가 제공되는 Codex MCP의 조회 예시다. 실제 속성 키, 날
 같은 구성을 사용하되 **이 프로젝트의 기록만** 사용한다. 프로젝트마다 프로젝트명 제목을 새로 만들고 별도 주제 부제를 붙이지 않는다.
 
 ## 전체 현황 요약 (선택)
-- 프로젝트별 선택 기록 수, 완료/진행 중 건수 등 단순 집계만 표로 제공한다.
+- 프로젝트별 조회 기록 수, 중복 통합 후 작업 수와 상태별 건수 등 단순 집계만 표로 제공한다.
 - 이 요약에 프로젝트별 결함·QA·다음 작업을 다시 합쳐 서술하지 않는다. 세부 내용은 각 프로젝트 절에 둔다.
 
-| 프로젝트 | 선택 기록 | 완료 | 진행 중 |
-| --- | ---: | ---: | ---: |
-| 프로젝트별 한 행 | ... | ... | ... |
+| 프로젝트 | 조회 기록 | 작업 | 완료 | 진행 중 | 기타 상태 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 프로젝트별 한 행 | ... | ... | ... | ... | ... |
 ```
 
 보고서는 **프로젝트를 최상위 분류 기준**으로 삼는다. 모든 상세 섹션, 도메인 QA 표, 진행 작업, 잔여 위험, 검증 수치, 모델 정보는 해당 프로젝트 절 안에 둔다. 여러 프로젝트가 있어도 도메인이나 Category 기준의 교차 프로젝트 상세 표를 만들지 않는다. 프로젝트가 누락된 레코드는 `프로젝트 미지정` 절에 따로 둔다. 프로젝트 간 비교는 사용자가 요청한 경우 또는 짧은 전체 집계 표에서만 한다. 같은 사실을 프로젝트 절과 전체 현황에 반복하지 않는다.
@@ -372,7 +373,7 @@ SQL 모드가 제공되는 Codex MCP의 조회 예시다. 실제 속성 키, 날
 
 ## 빈 결과 및 완료
 
-- 선택된 레코드가 없으면 “해당 기간에 보고서 포함으로 선택된 작업 기록이 없습니다”라고 기간과 프로젝트 필터를 함께 알리고, 빈 보고서를 성과처럼 만들지 않는다.
+- 기간 내 레코드가 없으면 “해당 기간의 작업 기록이 없습니다”라고 기간과 프로젝트 필터를 함께 알리고, 빈 보고서를 성과처럼 만들지 않는다.
 - 누락 날짜 기록이나 조회 제한, fetch 실패가 있으면 완료된 보고서와 분리해 데이터 범위를 밝힌다.
 - 기본 출력은 대화에 Markdown 초안을 제공하는 것이다. 사용자가 Notion에 저장하라고 하면 적절한 보고서 페이지 위치와 기존 페이지 중복 여부를 확인한 뒤 생성한다. 예약·게시·외부 전송은 요청이 있을 때만 수행한다.
 ~~~~

@@ -18,7 +18,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 기록 규칙을 사용한다
 
 ## 입력 및 감지
 
-- 입력: `--project <name>`(선택), `--category Backend|Infra|Workflow|Troubleshooting|Architecture`(선택), `--type LLM-Assisted|Manual`(선택), `--model <active-model-id>`(선택), `--status Done|In Progress`(선택), `--include-in-report`(선택). 명시하지 않은 값을 추측해 옵션으로 전달하지 않는다.
+- 입력: `--project <name>`(선택), `--category Backend|Infra|Workflow|Troubleshooting|Architecture`(선택), `--type LLM-Assisted|Manual`(선택), `--model <active-model-id>`(선택), `--status Done|In Progress`(선택). 명시하지 않은 값을 추측해 옵션으로 전달하지 않는다.
 - 프로젝트명 우선순위는 **사용자가 명시한 `--project` > Git 루트 `.tasklog.json`의 `project` > Git `remote.origin.url`의 저장소명 > 현재 작업 디렉터리명**이다. Git 저장소가 아니면 현재 디렉터리를 루트로 본다. JSON이 잘못되었거나 `project`가 빈 값이면 잘못된 프로젝트에 기록하지 않도록 중단한다.
 - Git 상태, 현재 브랜치(`git branch --show-current`), 최근 커밋 SHA·시각, staged·unstaged diff를 직접 확인한다. 최근 커밋은 이번 작업으로 확인된 경우에만 사용하고 현재 세션의 변경 맥락과 대조해 기록 범위를 정한다. Git 저장소가 아니거나 diff가 없으면 사실을 명시하고 세션 맥락만 사용한다.
 
@@ -39,7 +39,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 기록 규칙을 사용한다
 
   스킬 파일이나 문서라는 형식만으로 Workflow를 고르지 않는다. 기록·복원 시스템의 구조와 계약을 설계했다면 Architecture, 이미 정해진 절차의 실행을 자동화했다면 Workflow다. 완료된 검증 가능한 작업은 완료 상태, 중단된 작업은 진행 중 상태와 구체적인 `Next Actions`를 사용한다. 입력의 `Done`·`In Progress`는 의미상 상태이며 실제 Notion 옵션 이름은 스키마에서 확인한다.
 - 현재 기록에 관여한 **정확한 활성 모델 ID**를 `LLM`에 기록한다. 탐색 순서는 사용자 `--model` > 현재 세션 메타데이터/실행 옵션 > 이 세션에 적용된 것으로 확인된 CLI 설정이다. 전역 설정만 보고 현재 세션 모델이라고 단정하지 않는다. 제품명(Codex·Kiro·agy), 공급자명, 모델 계열명만으로 정확한 모델 ID를 대체하거나 예시 페이로드 값을 복사하지 않는다. 확인할 수 없으면 다른 내용의 요약은 준비하되 기록 전에 사용자에게 활성 모델 ID를 요청한다. LLM이 작업 또는 기록 분석에 관여했다면 `Type=Manual`이어도 모델을 기록한다. 여러 모델이 관여했다면 주된 모델 ID를 Select에 넣고 확인된 다른 모델과 각 역할을 본문에 적는다.
-- `Include in Report`는 기본 `false`. 배포, 장애 해결, 정량 성능 개선, 주요 설계 결정 등 보고 가치가 명확할 때 `true`를 제안한다. 사용자 승인 없이 기본값을 바꾸지 않는다.
+- 보고서는 사용자가 지정한 기간의 모든 기록을 대상으로 한다. 보고서 포함 체크박스를 요구하거나 설정하지 않는다. 기존 `Include in Report` 속성은 삭제·수정하지 않고 기록 페이로드에서 생략한다.
 - Notion 전송 전 diff에서 토큰, 암호, 개인정보, 내부 URL, 고객 데이터 등 민감 정보를 제거한다. 비밀 값은 본문에 싣지 않고 변경의 의미만 기술한다. 테스트 수치가 없으면 수치를 만들지 않는다.
 - **참조 링크 및 연관 작업 수집**:
   - 세션 중 참고한 공식 문서, 라이브러리 가이드, 스택오버플로우, GitHub PR/Issue, 설계 문서 URL이 있다면 링크를 수집한다.
@@ -52,7 +52,7 @@ Codex, Kiro CLI, agy, Claude Code, pi에서 같은 기록 규칙을 사용한다
 
 1. 데이터베이스는 사용자가 명시한 ID/URL > `.tasklog.json`의 유효한 `notion_database_id` > `NOTION_WORK_LOG_DATABASE_ID` 환경변수 순서로 찾는다. 문자열 `"null"`, JSON `null`, 빈 값은 미설정으로 취급한다. 모두 미설정이면 ID/URL 입력을 요청하고 쓰기를 중단한다. 데이터베이스 내부의 일반 페이지나 템플릿 ID를 데이터베이스 ID로 사용하지 않는다.
 2. Notion MCP의 `notion_fetch({"id":"self"})`로 연결을 확인한다. 설정된 데이터베이스를 `notion_fetch`하여 실제 속성 이름·타입·옵션과 `<data-source url="collection://...">`의 ID를 확인한다. 데이터베이스 ID에서 데이터 소스 ID를 추측하지 않는다.
-3. 한국어 `LLM Logs`의 기본 속성은 `이름` Title, `Project` Select, `Date` Date, `Category` Select, `Type` Select, `Status` Status, `Include in Report` Checkbox, `LLM` Select이며, Git 브랜치 속성인 `Git Branch`(Select 또는 Text/Rich text)를 지원한다. 영어 템플릿에서는 제목이 `Name`, 상태가 `In Progress`·`Done`, 브랜치가 `Git Branch` 또는 `Branch`일 수 있다. **양쪽 모두** 실제 스키마에서 Title, 프로젝트 Select, 날짜 Date, 분류 Select, 작업 방식 Select, Status, 보고서 Checkbox, 모델 식별용 Select, 브랜치용 속성을 용도와 타입으로 매핑한다. 모델용 Select가 없다면 기존 속성을 임의 변환하지 말고 `LLM` Select를 추가한다. 스키마에 `Git Branch`(또는 `Branch`) 속성이 존재하면 감지된 현재 Git 브랜치명을 기록한다(Select 타입인 경우 옵션 추가/사용, Text 타입인 경우 문자열 기록). 스키마에 브랜치 속성이 아직 없으면 Notion 속성 쓰기는 건너뛰고 본문(What)에만 브랜치를 기록한다. Git 저장소가 아니거나 브랜치를 확인할 수 없으면 빈 값으로 처리하거나 생략한다. Status 옵션은 우선 그룹 `in_progress`·`complete`로 식별해 각각 체크포인트·완료에 사용한다. 그룹 정보가 없으면 `진행 중`/`완료` 또는 `In Progress`/`Done`처럼 의미가 분명한 옵션을 사용한다. 대응이 여러 개이거나 불분명할 때만 사용자에게 확인한다. `생성일` Created time은 읽기 전용이다.
+3. 한국어 `LLM Logs`의 기본 속성은 `이름` Title, `Project` Select, `Date` Date, `Category` Select, `Type` Select, `Status` Status, `LLM` Select이며, Git 브랜치 속성인 `Git Branch`(Select 또는 Text/Rich text)를 지원한다. 영어 템플릿에서는 제목이 `Name`, 상태가 `In Progress`·`Done`, 브랜치가 `Git Branch` 또는 `Branch`일 수 있다. **양쪽 모두** 실제 스키마에서 Title, 프로젝트 Select, 날짜 Date, 분류 Select, 작업 방식 Select, Status, 모델 식별용 Select, 브랜치용 속성을 용도와 타입으로 매핑한다. 모델용 Select가 없다면 기존 속성을 임의 변환하지 말고 `LLM` Select를 추가한다. 스키마에 `Git Branch`(또는 `Branch`) 속성이 존재하면 감지된 현재 Git 브랜치명을 기록한다(Select 타입인 경우 옵션 추가/사용, Text 타입인 경우 문자열 기록). 스키마에 브랜치 속성이 아직 없으면 Notion 속성 쓰기는 건너뛰고 본문(What)에만 브랜치를 기록한다. Git 저장소가 아니거나 브랜치를 확인할 수 없으면 빈 값으로 처리하거나 생략한다. Status 옵션은 우선 그룹 `in_progress`·`complete`로 식별해 각각 체크포인트·완료에 사용한다. 그룹 정보가 없으면 `진행 중`/`완료` 또는 `In Progress`/`Done`처럼 의미가 분명한 옵션을 사용한다. 대응이 여러 개이거나 불분명할 때만 사용자에게 확인한다. `생성일` Created time은 읽기 전용이다.
 4. 페이지 생성 전에 `Project`·`Category`·`Type`·모델 식별 속성(및 `Git Branch`가 Select 타입인 경우 브랜치명)의 **이번 기록에 필요한** Select 값을 모두 확인한다. 기존 옵션 중 의미가 맞는 값을 우선 사용한다. 빠진 속성과 옵션은 Notion MCP의 `notion_notion_update_data_source` 또는 동등한 데이터 소스 스키마 업데이트 도구로 자동 추가한다. `ALTER COLUMN "실제 속성명" SET SELECT(...)`에는 같은 속성의 기존 옵션을 모두 포함하고 이름·색상·설명과 속성 설명을 보존한다. 도구가 이를 보존할 수 없으면 기존 스키마를 덮어쓰지 않고 원인을 보고한다. 속성명이 영어 등으로 다르면 조회한 실제 이름을 쓴다. 필요한 변경만 한 호출로 보내고 데이터 소스를 다시 fetch해 필요한 속성과 옵션이 실제로 존재하는지 확인한다. 옵션 추가 도구가 없거나 권한/검증 오류가 나면 페이지 생성을 중단하고 정확한 원인을 보고한다. Title·Status 등 다른 속성이나 기존 옵션을 바꾸지 않는다.
 
 예: 옵션이 비어 있는 `Project`, `Category`, `Type`에 각각 `billing-api`, `Workflow`, `Manual`이 필요할 때의 Codex Notion MCP 페이로드. 실제 데이터 소스 ID·속성명·값을 사용한다. **기존 옵션이 하나라도 있으면 아래 예시를 그대로 보내지 말고 모든 기존 옵션을 포함**한다. DDL의 작은따옴표가 값에 있으면 MCP 문법에 맞게 이스케이프한다.
@@ -102,8 +102,7 @@ Notion MCP `notion_create_pages` 호출의 **한국어 `LLM Logs` 예시**다. �
       "Category": "Backend",
       "Type": "LLM-Assisted",
       "LLM": "<active-model-id>",
-      "Status": "완료",
-      "Include in Report": "__NO__"
+      "Status": "완료"
     },
     "content": "### 1. 배경 및 목적 (Why)\n...\n\n### 2. 주요 변경 내역 (What)\n...\n\n### 3. 기술적/정량적 임팩트\n...\n\n### 4. 다음 작업 (Next Actions)\n없음\n\n### 5. 참고 링크 및 연관 작업 (References)\n- 공식 문서/외부 참고: 없음\n- 연관 작업/문서: 없음"
   }]
@@ -112,4 +111,4 @@ Notion MCP `notion_create_pages` 호출의 **한국어 `LLM Logs` 예시**다. �
 
 같은 작업의 체크포인트가 이미 있으면 페이지를 조회해 `notion_update_page`로 본문과 `Status`를 갱신한다. 중복 생성 방지를 위해 프로젝트·제목·날짜 및 현재 세션의 작업 범위를 먼저 대조한다. 생성 후 반환된 페이지 ID/URL을 기록하고 조회로 속성 및 본문을 확인한다. 쓰기 결과가 불확실하면 먼저 조회하고 중복 생성하지 않는다. 옵션 사전 확인 이후 페이지 생성에서 `Invalid select value`가 나면 데이터 소스를 다시 조회해 누락 옵션을 추가하고 생성은 한 번만 재시도한다.
 
-월간 보고서는 `notion-monthly-report`의 기간·포함 여부·상태 구분 규칙을 따른다. 완료·진행 중 기록을 구분하며 같은 작업은 중복 집계하지 않는다. 해당 스킬을 사용할 수 없으면 사용자에게 보고서 규칙을 확인하고 자동 발행·예약은 수행하지 않는다.
+기간별 보고서는 `notion-monthly-report`의 날짜 범위·프로젝트·상태 구분 규칙을 따른다. 완료·진행 중 기록을 구분하며 같은 작업은 중복 집계하지 않는다. 해당 스킬을 사용할 수 없으면 사용자에게 보고서 규칙을 확인하고 자동 발행·예약은 수행하지 않는다.
