@@ -42,12 +42,6 @@ npx skills add JoonHoSeong/tasklog-skills -g
 
 선택 화면에서 네 스킬과 사용할 AI 도구를 선택한 뒤 해당 도구를 다시 시작합니다. 프로젝트 한 곳에만 설치하려면 `-g`를 생략합니다. 설치 도구가 대상 도구를 지원하지 않거나 탐색에 실패하면 [수동 배치 안내](INSTALL_KIRO_CODEX_AGY.md)를 참고해 네 스킬 **폴더 전체**를 배치합니다. `scripts/`와 `references/`도 함께 유지해야 합니다.
 
-비공개 저장소로 운영하는 경우에는 저장소 읽기 권한과 Git 인증이 필요합니다. SSH 인증을 사용하는 설치 예시:
-
-```bash
-npx skills add git@github.com:JoonHoSeong/tasklog-skills.git -g
-```
-
 설치 상태와 업데이트를 확인합니다.
 
 ```bash
@@ -56,7 +50,7 @@ npx skills check
 npx skills update
 ```
 
-명령 옵션과 인증 방식은 [skills 설치 문서](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)를 참고하세요.
+명령 옵션은 [skills 설치 문서](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)를 참고하세요.
 
 ### 3. Notion MCP 연결 — 필수
 
@@ -194,12 +188,6 @@ npx skills add JoonHoSeong/tasklog-skills -g
 
 Select all four skills and your AI agents, then restart the agents. Omit `-g` for a project installation. If the installer does not support or discover your agent, see the [manual placement guide](INSTALL_KIRO_CODEX_AGY.md) and place the four **complete skill folders**, including `scripts/` and `references/`.
 
-For a private repository, configure Git authentication with read access first. Example using SSH:
-
-```bash
-npx skills add git@github.com:JoonHoSeong/tasklog-skills.git -g
-```
-
 Inspect installations and manage updates:
 
 ```bash
@@ -208,7 +196,7 @@ npx skills check
 npx skills update
 ```
 
-See the [skills installation reference](https://github.com/vercel-labs/skills/blob/main/docs/commands.md) for options and authentication.
+See the [skills installation reference](https://github.com/vercel-labs/skills/blob/main/docs/commands.md) for command options.
 
 ### 3. Connect Notion MCP — required
 
